@@ -2,16 +2,19 @@ import { makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 import Card from './Card';
 
-function CustomizeSection() {
+function CustomizeSection({ products }) {
     const classes = useStyles();
 
     return (
         <section className={classes.root}>
             <Typography variant="h4" align="left" gutterBottom className={`${classes.title} title`}>Products</Typography>
             <div className={classes.itemContainer}>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
+                {
+                    products.length > 0 &&
+                    products.map(product => (
+                        <Card product={product}/>
+                    ))
+                }
             </div>
         </section>
     );

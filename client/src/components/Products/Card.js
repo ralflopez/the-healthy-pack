@@ -1,17 +1,21 @@
 import { makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import sample from '../../assets/sample.jpg';
 
-function Card({ id, info, add }) {
+function Card({ product, add }) {
+    const { _id, name, img, price } = product;
+
     const classes = useStyles();
     let history = useHistory();
 
     const redirectToItem = () => {
         history.push({
             pathname: '/product',
-            search: `?item=${id}`
-        })
+            search: `?id=${_id}`,
+            state: {
+                data: product
+            }
+        });
     }
 
     return (
@@ -20,9 +24,11 @@ function Card({ id, info, add }) {
             className={`${classes.root} fadedown`}
             onClick={redirectToItem}
         >
-            <img src={sample} alt="preview" className={`${classes.prevImg} card-img`}/>
-            <Typography variant="h5">Product 1</Typography>
-            <Typography variant="body1" className={classes.price}>P 120.00</Typography>
+            <img src={img} alt="preview" className={`${classes.prevImg} card-img`}/>
+            <div className={classes.info}>
+                <Typography variant="h5" className={classes.title}>{name}</Typography>
+                <Typography variant="body1" className={classes.price}>P {price}.00</Typography>
+            </div>
         </Paper>
     );
 }
@@ -30,7 +36,7 @@ function Card({ id, info, add }) {
 const useStyles = makeStyles(theme => ({
     root: {
         width: '90%',
-        height: '350px',
+        height: '360px',
         maxWidth: '300px',
         display: 'inline-block',
         margin: theme.spacing(2),
@@ -50,6 +56,17 @@ const useStyles = makeStyles(theme => ({
     price: {
         color: theme.palette.secondary.main,
         marginTop: theme.spacing(2)
+    },
+    info: {
+        width: '100%',
+        height: '150px',
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2)
+    },
+    title: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        height: '70px',
     }
 }));
 

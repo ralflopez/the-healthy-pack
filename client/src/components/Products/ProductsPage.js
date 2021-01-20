@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import CustomizeSection from './CustomizeSection';
 import CatalogueSection from './CatalogueSection';
 import { gsap } from 'gsap';
@@ -6,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 function ProductsPage() {
+    let [products, setProducts] = useState([]);
 
     useEffect(() => {
         gsap.timeline()
@@ -14,10 +16,22 @@ function ProductsPage() {
         .from('.card-img', {duration: 1.2, height: 0, ease: 'power2.easeOut'}, '-=1')
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const { data } = await axios.get('/products');
+                setProducts(data);
+            } catch (er) {
+                console.log(er);
+            }
+        }
+        fetchData();
+    }, []);
+
     return (
         <>
             <CustomizeSection/>
-            <CatalogueSection/>
+            <CatalogueSection products={products}/>
         </>
     );
 }

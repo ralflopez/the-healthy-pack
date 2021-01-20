@@ -1,21 +1,24 @@
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as actions from '../../redux/actions';
 import { connect } from 'react-redux';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import sample from '../../assets/sample.jpg';
 gsap.registerPlugin(ScrollTrigger);
 
-function ProductPreview() {
+function ProductPreview(props) {
     const classes = useStyles();
+    const { state: { data } } = useLocation();
+    const { name, img, by, price, contents, nutrition: { calories, protein, carbohydrates, cholesterol } } = data;
+
     let [alert, setAlert] = useState(false);
 
     useEffect(() => {
         gsap.timeline()
         .from('.fadedown', {duration: 2, opacity: 0, y: -50, ease: 'power2.easeOut'}, '-=1')
-        .from('.card-img', {duration: 2 , height: 0, ease: 'power2.easeOut'}, '-=1')
+        .from('.card-img', {duration: 2 , height: 0, ease: 'power2.easeOut'}, '-=1');
     }, []);
 
     const addToCart = () => {
@@ -39,11 +42,11 @@ function ProductPreview() {
                 </Alert>)
             }
             <div className={classes.col1}>
-                <img src={sample} alt="preview" className={`${classes.img} card-img`}/>
+                <img src={img} alt="preview" className={`${classes.img} card-img`}/>
             </div>
             <Box pt={7} pb={7} className={`${classes.col2} fadedown`}>
                 <div className={classes.colContainer}>
-                    <Typography variant="h3" gutterBottom>Product 1</Typography>
+                    <Typography variant="h3" gutterBottom>{name}</Typography>
                     <Typography variant="h4" gutterBottom>Contents</Typography>
                     <ul className={classes.content}>
                         <li>Conent 1</li>
