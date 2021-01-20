@@ -15,17 +15,11 @@ const ProductScehma = new mongoose.Schema({
         type: Array,
         required: true
     },
-    calories: {
-        type: String || Number
+    nutrition: {
+        type: Object
     },
-    protein: {
-        type: String
-    },
-    carbohydrates: {
-        type: String
-    },
-    cholesterol: {
-        type: String
+    price: {
+        type: Number || String
     }
 });
 
