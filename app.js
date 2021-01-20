@@ -3,7 +3,6 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 const dbconfig = require('./utils/dbconfig');
-
 dbconfig();
 
 app.use(express.json());
