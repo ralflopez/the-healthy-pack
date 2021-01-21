@@ -1,12 +1,15 @@
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../redux/actions';
 import Card from './CartCard';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
-function CustomizeSection() {
+function CartPage({ cart }) {
     const classes = useStyles();
+    let total = 0;
 
     useEffect(() => {
         gsap.timeline()
@@ -19,20 +22,22 @@ function CustomizeSection() {
         <section className={classes.root}>
             <Typography variant="h4" align="left" gutterBottom className={`${classes.title} title`}>Cart</Typography>
             <div className={classes.itemContainer}>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
-                <Card id="" info=""/>
+                {
+                    cart &&
+                    cart.map(item => {
+                        total += (item.product.price * item.quantity);
+                        return <Card product={item.product} quantity={item.quantity}/>
+                    })
+                }
                 <div>
                     <Typography variant="body1" className={classes.priceContainer}>Total: 
-                        <span id="price" className={classes.price}>P 120.00</span>
+                        <span id="price" className={classes.price}>P {total}</span>
                     </Typography>
                     <Button 
                         variant="contained" 
                         color="secondary" 
                         className={classes.btn}
-                    >Add to Cart</Button>
+                    >Checkout</Button>
                 </div>
             </div>
         </section>
@@ -73,6 +78,11 @@ const useStyles = makeStyles(theme => ({
         paddingLeft: theme.spacing(4),
         paddingRight: theme.spacing(4),
     },
-}))
+}));
 
-export default CustomizeSection;
+const mapStateToProps = (state) => ({
+    cart: state.cart
+});
+
+
+export default connect(mapStateToProps)(CartPage);

@@ -8,10 +8,10 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
-function ProductPreview(props) {
+function ProductPreview({add}) {
     const classes = useStyles();
     const { state: { data } } = useLocation();
-    const { name, img, by, price, contents, nutrition: { calories, protein, carbohydrates, cholesterol } } = data;
+    const { name, img, by, price, contents, nutrition } = data;
 
     let [alert, setAlert] = useState(false);
 
@@ -22,9 +22,11 @@ function ProductPreview(props) {
     }, []);
 
     const addToCart = () => {
+        console.log('add event', add)
         if(alert)
             return;
-
+        
+        add(data);
         setAlert(true);
 
         setTimeout(() => {
@@ -49,12 +51,12 @@ function ProductPreview(props) {
                     <Typography variant="h3" gutterBottom>{name}</Typography>
                     <Typography variant="h4" gutterBottom>Contents</Typography>
                     <ul className={classes.content}>
-                        <li>Conent 1</li>
-                        <li>Conent 1</li>
-                        <li>Conent 1</li>
-                        <li>Conent 1</li>
-                        <li>Conent 1</li>
-                        <li>Conent 1</li>
+                        {
+                            contents &&
+                            contents.map(content => (
+                                <li>{content}</li>
+                            ))
+                        }
                     </ul>
                     <div className={classes.btnGroup}>
                         <Button 
@@ -148,10 +150,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const mapDispatchToProps = (dispatch) => ({
-    add: ({ name, amount, quantity }) => dispatch({
+    add: (product) => {
+        console.log('dispatchpeoprs')
+        dispatch({
         type: actions.ADD_TO_CART,
-        payload: { name, amount, quantity }
-    }),
+        payload: { product }
+    })},
 });
 
 export default connect(null, mapDispatchToProps)(ProductPreview);

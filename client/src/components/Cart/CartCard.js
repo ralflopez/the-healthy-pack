@@ -1,10 +1,20 @@
-import { IconButton, makeStyles, Paper, Typography } from '@material-ui/core';
+import { FormControl, IconButton, Input, InputLabel, makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
-import CloseIcon from '@material-ui/icons/Close';
-import sample from '../../assets/sample.jpg';
+import { connect } from 'react-redux';
+import * as actions from '../../redux/actions';
+import DeleteIcon from '@material-ui/icons/Delete';
 
-function Card({ id, info }) {
+function Card({ product, quantity, remove, setQuantity }) {
     const classes = useStyles();
+    const { _id, name, img, price } = product;
+
+    const handleDelete = () => {
+        remove(_id);
+    }
+
+    const handleQuantity = (e) => {
+        setQuantity(_id, e.target.value);
+    }
 
     return (
         <Paper 
@@ -13,14 +23,15 @@ function Card({ id, info }) {
         >
             <div className={classes.left}>
                 <Paper elevation={0} className={classes.imgContainer}>
-                    <img src={sample} alt="preview" className={classes.prevImg}/>
+                    <img src={img} alt="preview" className={classes.prevImg}/>
                 </Paper>
-                <Typography variant="h5" className={classes.title}>Product 1</Typography>
+                <Typography variant="h5" className={classes.title}>{name}</Typography>
             </div>
             <div className={classes.left}>
-                <Typography variant="body1" className={classes.price}>P 120.00</Typography>
-                <IconButton className={classes.delButton}>
-                    <CloseIcon/>
+                <Input type="number" inputProps={{min: 0, max: 50}} value={quantity} onChange={handleQuantity}/>
+                <Typography variant="body1" className={classes.price}>P {quantity * price}</Typography>
+                <IconButton className={classes.delButton} onClick={handleDelete}>
+                    <DeleteIcon/>
                 </IconButton>
             </div>
         </Paper>
@@ -38,6 +49,9 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 0,
         padding: theme.spacing(2),
         cursor: 'pointer',
+        [theme.breakpoints.down('xs')]: {
+            flexDirection: 'column'
+        }
     },
     imgContainer: {
         width: '100%',
@@ -75,7 +89,27 @@ const useStyles = makeStyles(theme => ({
     },
     delButton: {
         marginLeft: theme.spacing(2),
-    }
-}))
+    },
+    qbtn: {
+        marginLeft: theme.spacing(2),
+        padding: 0,
+        color: theme.palette.secondary.main,
+    },
+}));
 
-export default Card;
+const mapDispatchToProps = (dispatch) => ({
+    remove: (id) => dispatch({
+        type: actions.REMOVE_FROM_CART,
+        payload: {
+            id
+        }
+    }),
+    setQuantity: (id, quantity) => dispatch({
+        type: actions.SET_QUANTITY,
+        payload: {
+            id, quantity
+        }
+    })
+})
+
+export default connect(null, mapDispatchToProps)(Card);
